@@ -33,6 +33,6 @@ setup(
     ],
     
     install_requires=[
-        "pyyaml==6.0.2"
+        "pyyaml==6.0.1"
     ]
 )
