@@ -1,5 +1,5 @@
 import yaml
-from utils.yaml_utils import all_keys
+from .utils import all_keys
 
 
 class AvgFieldsPerResource:
