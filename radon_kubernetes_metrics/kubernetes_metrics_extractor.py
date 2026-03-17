@@ -1,4 +1,4 @@
-from import_metrics import general_metrics, kubernetes_metrics
+from import_metrics import general_metrics, manifest_metrics
 
 
 def extract_kubernetes(script: str):
@@ -7,7 +7,7 @@ def extract_kubernetes(script: str):
         raise TypeError('Expected a string')
 
     metrics = general_metrics
-    metrics.update(kubernetes_metrics)
+    metrics.update(manifest_metrics)
 
     results = dict()
 
