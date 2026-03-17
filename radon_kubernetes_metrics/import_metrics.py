@@ -77,7 +77,7 @@ general_metrics = {
     'text_entropy': TextEntropy
 }
 
-kubernetes_metrics = {
+manifest_metrics = {
 
     # structure
     'num_resources': NumResources,
