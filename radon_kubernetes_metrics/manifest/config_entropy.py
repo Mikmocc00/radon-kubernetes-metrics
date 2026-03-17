@@ -2,7 +2,7 @@ import math
 import yaml
 import re
 from collections import Counter
-from .utils.yaml_utils import all_values
+from ..utils.yaml_utils import all_values
 
 
 class ConfigEntropy:
