@@ -1,22 +1,17 @@
 import math
-import yaml
 import re
 from collections import Counter
-from ..utils import all_values
-
+from ..utils import ParsedManifest, all_values
 
 class ConfigEntropy:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-
-        docs = yaml.safe_load_all(self.script)
-
         values = []
 
-        for doc in docs:
+        for doc in self.manifest.docs:
             if not doc:
                 continue
 

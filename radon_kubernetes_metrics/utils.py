@@ -1,4 +1,5 @@
 from typing import Union
+import yaml
 
 
 def key_value_list(d: Union[dict, list], key=None):
@@ -83,3 +84,15 @@ def all_values(d: Union[dict, list]):
             values.extend(all_values(v))
 
     return values
+
+class ParsedManifest:
+    """ Oggetto che incapsula sia il testo grezzo che la struttura parsata. """
+    def __init__(self, script: str):
+        self.raw_content = script if script else ""
+        try:
+            self.docs = [doc for doc in yaml.safe_load_all(self.raw_content) if doc is not None]
+        except Exception:
+            self.docs = []
+
+    def __bool__(self):
+        return bool(self.raw_content)

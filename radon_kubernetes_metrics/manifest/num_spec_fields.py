@@ -1,10 +1,9 @@
-import yaml
-
+from ..utils import ParsedManifest
 
 class NumSpecFields:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def _count_fields(self, obj):
         if isinstance(obj, dict):
@@ -15,11 +14,10 @@ class NumSpecFields:
             return 0
 
     def count(self):
-        docs = yaml.safe_load_all(self.script)
         total = 0
 
-        for doc in docs:
-            if doc and 'spec' in doc:
+        for doc in self.manifest.docs:
+            if isinstance(doc, dict) and 'spec' in doc:
                 total += self._count_fields(doc['spec'])
 
         return total

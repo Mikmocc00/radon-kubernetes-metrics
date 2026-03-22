@@ -1,23 +1,18 @@
-import yaml
-from ..utils import all_keys
-
+from ..utils import ParsedManifest, all_keys
 
 class AvgFieldsPerResource:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-
-        docs = list(yaml.safe_load_all(self.script))
-
-        if not docs:
+        if not self.manifest.docs:
             return 0
 
         total_fields = 0
         resource_count = 0
 
-        for doc in docs:
+        for doc in self.manifest.docs:
             if not doc:
                 continue
 

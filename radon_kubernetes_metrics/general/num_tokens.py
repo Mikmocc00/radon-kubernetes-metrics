@@ -1,13 +1,13 @@
 import re
-
+from ..utils import ParsedManifest
 
 class NumTokens:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
 
-        tokens = re.findall(r'\w+', self.script)
+        tokens = re.findall(r'\w+', self.manifest.raw_content)
 
         return len(tokens)

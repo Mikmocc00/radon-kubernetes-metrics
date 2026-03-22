@@ -1,10 +1,12 @@
+from ..utils import ParsedManifest
+
 class AvgResourceSize:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-        resources = self.script.split('---')
+        resources = self.manifest.raw_content.split('---')
 
         sizes = [
             len(r.strip().splitlines())

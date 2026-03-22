@@ -1,11 +1,13 @@
+from ..utils import ParsedManifest
+
 class LinesCode:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
 
-        lines = self.script.splitlines()
+        lines = self.manifest.raw_content.splitlines()
 
         code_lines = [
             l for l in lines

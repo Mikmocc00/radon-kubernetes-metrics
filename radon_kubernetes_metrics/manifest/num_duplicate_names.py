@@ -1,17 +1,15 @@
-import yaml
-
+from ..utils import ParsedManifest
 
 class NumDuplicateNames:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-        docs = list(yaml.safe_load_all(self.script))
         names = []
 
-        for doc in docs:
-            if not doc:
+        for doc in self.manifest.docs:
+            if not isinstance(doc, dict):
                 continue
 
             name = doc.get("metadata", {}).get("name")

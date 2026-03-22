@@ -1,20 +1,19 @@
-import yaml
-
+from ..utils import ParsedManifest
 
 class NumLabels:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-        docs = yaml.safe_load_all(self.script)
         total = 0
 
-        for doc in docs:
-            if not doc:
+        for doc in self.manifest.docs:
+            if not isinstance(doc, dict):
                 continue
 
             labels = doc.get("metadata", {}).get("labels", {})
-            total += len(labels)
+            if isinstance(labels, dict):
+                total += len(labels)
 
         return total

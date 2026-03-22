@@ -1,18 +1,14 @@
-import yaml
-from ..utils import all_keys
-
+from ..utils import ParsedManifest, all_keys
 
 class NumTotalFields:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-
-        docs = yaml.safe_load_all(self.script)
         total = 0
 
-        for doc in docs:
+        for doc in self.manifest.docs:
             if not doc:
                 continue
 

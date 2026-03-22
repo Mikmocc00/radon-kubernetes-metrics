@@ -1,28 +1,29 @@
-import yaml
-
+from ..utils import ParsedManifest
 
 class NumStartupProbes:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-        docs = yaml.safe_load_all(self.script)
         total = 0
 
-        for doc in docs:
-            if not doc:
+        for doc in self.manifest.docs:
+            if not isinstance(doc, dict):
                 continue
 
             spec = doc.get("spec", {})
-            if "template" in spec:
+            if "template" in spec and isinstance(spec["template"], dict):
                 spec = spec["template"].get("spec", {})
 
             containers = spec.get("containers", [])
             init_containers = spec.get("initContainers", [])
 
+            if not isinstance(containers, list): containers = []
+            if not isinstance(init_containers, list): init_containers = []
+
             for c in containers + init_containers:
-                if "startupProbe" in c:
+                if isinstance(c, dict) and "startupProbe" in c:
                     total += 1
 
         return total

@@ -1,34 +1,30 @@
-import yaml
-
+from ..utils import ParsedManifest
 
 class AvgContainersPerPod:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-        docs = yaml.safe_load_all(self.script)
-
         total_containers = 0
         pod_count = 0
 
-        for doc in docs:
-            if not doc:
+        for doc in self.manifest.docs:
+            if not isinstance(doc, dict):
                 continue
 
             spec = doc.get("spec", {})
 
-            # Caso workload (Deployment, Job, ecc.)
-            if "template" in spec:
+            if "template" in spec and isinstance(spec["template"], dict):
                 spec = spec["template"].get("spec", {})
                 pod_count += 1
 
-            # Caso Pod diretto
             elif "containers" in spec:
                 pod_count += 1
 
             containers = spec.get("containers", [])
-            total_containers += len(containers)
+            if isinstance(containers, list):
+                total_containers += len(containers)
 
         if pod_count == 0:
             return 0

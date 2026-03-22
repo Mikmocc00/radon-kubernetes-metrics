@@ -1,20 +1,15 @@
-import yaml
-
+from ..utils import ParsedManifest
 
 class NumServices:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-        docs = yaml.safe_load_all(self.script)
         total = 0
 
-        for doc in docs:
-            if not doc:
-                continue
-
-            if doc.get("kind") == "Service":
+        for doc in self.manifest.docs:
+            if isinstance(doc, dict) and doc.get("kind") == "Service":
                 total += 1
 
         return total

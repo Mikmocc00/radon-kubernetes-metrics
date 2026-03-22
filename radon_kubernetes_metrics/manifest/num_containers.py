@@ -1,26 +1,24 @@
-import yaml
+from ..utils import ParsedManifest
 
 class NumContainers:
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-        docs = yaml.safe_load_all(self.script)
         total = 0
 
-        for doc in docs:
-            if not doc:
+        for doc in self.manifest.docs:
+            if not isinstance(doc, dict):
                 continue
 
-            # Pod-like resources
             spec = doc.get("spec", {})
 
-            # Template-based resources (Deployment, etc.)
-            if "template" in spec:
+            if "template" in spec and isinstance(spec["template"], dict):
                 spec = spec["template"].get("spec", {})
 
             containers = spec.get("containers", [])
-            total += len(containers)
+            if isinstance(containers, list):
+                total += len(containers)
 
         return total

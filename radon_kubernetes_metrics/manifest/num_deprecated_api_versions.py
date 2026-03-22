@@ -1,5 +1,4 @@
-import yaml
-
+from ..utils import ParsedManifest
 
 class NumDeprecatedAPIVersions:
 
@@ -10,21 +9,20 @@ class NumDeprecatedAPIVersions:
         "extensions/",
     ]
 
-    def __init__(self, script):
-        self.script = script
+    def __init__(self, manifest: ParsedManifest):
+        self.manifest = manifest
 
     def count(self):
-
-        docs = yaml.safe_load_all(self.script)
         total = 0
 
-        for doc in docs:
-            if not doc:
+        for doc in self.manifest.docs:
+            if not isinstance(doc, dict):
                 continue
 
             api_version = doc.get("apiVersion", "")
 
-            if any(pattern in api_version for pattern in self.DEPRECATED_PATTERNS):
-                total += 1
+            if isinstance(api_version, str):
+                if any(pattern in api_version for pattern in self.DEPRECATED_PATTERNS):
+                    total += 1
 
         return total
