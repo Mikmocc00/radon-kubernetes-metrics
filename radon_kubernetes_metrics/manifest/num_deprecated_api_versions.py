@@ -2,7 +2,6 @@ from ..utils import ParsedManifest
 
 class NumDeprecatedAPIVersions:
 
-    # Lista estendibile (puoi aggiornarla in base alla versione K8s target)
     DEPRECATED_PATTERNS = [
         "v1beta1",
         "v1alpha1",
