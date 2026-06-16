@@ -1,4 +1,8 @@
 from ..utils import ParsedManifest
+from ..manifest.num_affinity_rules import NumAffinityRules
+from ..manifest.num_node_selectors import NumNodeSelectors
+from ..manifest.num_tolerations import NumTolerations
+from ..manifest.num_resources import NumResources
 
 
 class SchedulingComplexity:
@@ -7,49 +11,17 @@ class SchedulingComplexity:
         self.manifest = manifest
 
     def count(self):
-        num_affinity_rules = 0
-        num_tolerations = 0
-        num_node_selectors = 0
-        num_resources = 0
+        num_resources = NumResources(self.manifest).count()
 
-        for doc in self.manifest.docs:
-            if not isinstance(doc, dict):
-                continue
+        if num_resources == 0:
+            return 0.0
 
-            num_resources += 1
+        num_affinity_rules = NumAffinityRules(self.manifest).count()
+        num_node_selectors = NumNodeSelectors(self.manifest).count()
+        num_tolerations = NumTolerations(self.manifest).count()
 
-            spec = doc.get("spec", {})
-            if "template" in spec and isinstance(spec["template"], dict):
-                pod_spec = spec["template"].get("spec", {})
-            else:
-                pod_spec = spec
-
-            if not isinstance(pod_spec, dict):
-                continue
-
-            affinity = pod_spec.get("affinity", {})
-            if isinstance(affinity, dict):
-                for affinity_type in ("nodeAffinity", "podAffinity", "podAntiAffinity"):
-                    af = affinity.get(affinity_type, {})
-                    if not isinstance(af, dict):
-                        continue
-                    for rule_group in (
-                        "requiredDuringSchedulingIgnoredDuringExecution",
-                        "preferredDuringSchedulingIgnoredDuringExecution",
-                    ):
-                        rules = af.get(rule_group, [])
-                        if isinstance(rules, list):
-                            num_affinity_rules += len(rules)
-
-            tolerations = pod_spec.get("tolerations", [])
-            if isinstance(tolerations, list):
-                num_tolerations += len(tolerations)
-
-            node_selector = pod_spec.get("nodeSelector", {})
-            if isinstance(node_selector, dict):
-                num_node_selectors += len(node_selector)
-
-        numerator = num_affinity_rules + num_tolerations + num_node_selectors
-        denominator = max(num_resources, 1)
-
-        return numerator / denominator
+        return (
+            num_affinity_rules +
+            num_node_selectors +
+            num_tolerations
+        ) / num_resources

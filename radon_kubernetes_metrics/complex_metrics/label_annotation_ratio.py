@@ -1,20 +1,15 @@
 from ..utils import ParsedManifest
+from ..manifest.num_labels import NumLabels
 from ..manifest.num_total_fields import NumTotalFields
-from ..manifest.num_resources import NumResources
 
 
-class StructuralDensity:
-
+class LabelAnnotationRatio:
 
     def __init__(self, manifest: ParsedManifest):
         self.manifest = manifest
 
     def count(self):
-        num_resources = NumResources(self.manifest).count()
-
-        if num_resources == 0:
-            return 0.0
-
+        num_labels = NumLabels(self.manifest).count()
         num_total_fields = NumTotalFields(self.manifest).count()
 
-        return num_total_fields / num_resources
+        return num_labels / (num_total_fields + 1)

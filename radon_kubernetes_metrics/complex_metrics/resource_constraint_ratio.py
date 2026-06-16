@@ -1,10 +1,9 @@
 from ..utils import ParsedManifest
-from ..manifest.num_total_fields import NumTotalFields
+from ..manifest.num_resource_limits import NumResourceLimits
 from ..manifest.num_resources import NumResources
 
 
-class StructuralDensity:
-
+class ResourceConstraintRatio:
 
     def __init__(self, manifest: ParsedManifest):
         self.manifest = manifest
@@ -15,6 +14,6 @@ class StructuralDensity:
         if num_resources == 0:
             return 0.0
 
-        num_total_fields = NumTotalFields(self.manifest).count()
+        num_resource_limits = NumResourceLimits(self.manifest).count()
 
-        return num_total_fields / num_resources
+        return num_resource_limits / num_resources

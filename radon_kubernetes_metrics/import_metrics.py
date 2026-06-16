@@ -67,14 +67,16 @@ from .manifest.num_node_selectors import NumNodeSelectors
 
 # ---------------- COMPLEX METRICS ----------------
 
-from .complex_metrics.security_risk_score import SecurityRiskScore
+from .complex_metrics.misconfig_density import MisconfigDensity
+from .complex_metrics.label_annotation_ratio import LabelAnnotationRatio
+from .complex_metrics.observability_score import ObservabilityScore
 from .complex_metrics.scheduling_complexity import SchedulingComplexity
-from .complex_metrics.resource_governance_ratio import ResourceGovernanceRatio
-from .complex_metrics.deployment_risk_score import DeploymentRiskScore
+from .complex_metrics.resource_constraint_ratio import ResourceConstraintRatio
 from .complex_metrics.structural_density import StructuralDensity
-from .complex_metrics.manifest_verbosity import ManifestVerbosity
-from .complex_metrics.network_exposure_density import NetworkExposureDensity
-from .complex_metrics.misconfiguration_pressure import MisconfigurationPressure
+from .complex_metrics.manifest_complexity_ratio import ManifestComplexityRatio
+from .complex_metrics.field_entropy import FieldEntropy
+from .complex_metrics.nesting_pressure import NestingPressure
+from .complex_metrics.config_stress import ConfigStress
 
 general_metrics = {
     'lines_code': LinesCode,
@@ -154,12 +156,14 @@ manifest_metrics = {
 }
 
 composite_metrics = {
-    "security_risk_score": SecurityRiskScore,
-    "scheduling_complexity": SchedulingComplexity,
-    "resource_governance_ratio": ResourceGovernanceRatio,
-    "deployment_risk_score": DeploymentRiskScore,
-    "structural_density": StructuralDensity,
-    "manifest_verbosity": ManifestVerbosity,
-    "network_exposure_density": NetworkExposureDensity,
-    "misconfiguration_pressure": MisconfigurationPressure,
+    'misconfig_density': MisconfigDensity,
+    'label_annotation_ratio': LabelAnnotationRatio,
+    'observability_score': ObservabilityScore,
+    'scheduling_complexity': SchedulingComplexity,
+    'resource_constraint_ratio': ResourceConstraintRatio,
+    'structural_density': StructuralDensity,
+    'manifest_complexity_ratio': ManifestComplexityRatio,
+    'field_entropy': FieldEntropy,
+    'nesting_pressure': NestingPressure,
+    'config_stress': ConfigStress,
 }

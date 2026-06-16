@@ -450,7 +450,147 @@ Conta i blocchi `volumes` dichiarati a livello di Pod (configmap, secret, emptyD
 
 ---
 
-## Riepilogo Completo (Metriche Aggiornate)
+## Metriche Composite (Composite Metrics)
+
+### 44. `MisconfigDensity`
+
+**Tipo:** `float`
+
+Calcola la densità di anti-pattern espliciti presenti nel manifest:
+
+```text
+(num_deprecated_api_versions + num_duplicate_names) / num_resources
+```
+
+**Perché è importante:** Combina due segnali direttamente associati a difetti noti: utilizzo di API deprecate e collisioni nei nomi delle risorse. Un valore elevato indica una maggiore concentrazione di configurazioni problematiche e una maggiore probabilità di errori durante upgrade, deploy o manutenzione del cluster.
+
+---
+
+### 45. `LabelAnnotationRatio`
+
+**Tipo:** `float`
+
+Calcola il rapporto tra il numero di label e il numero totale di campi del manifest:
+
+```text
+num_labels / (num_total_fields + 1)
+```
+
+**Perché è importante:** Fornisce una misura della ricchezza semantica del manifest. Valori molto bassi indicano risorse scarsamente etichettate e quindi meno osservabili e gestibili; valori eccessivamente alti possono segnalare configurazioni sovra-documentate o inutilmente complesse.
+
+---
+
+### 46. `ObservabilityScore`
+
+**Tipo:** `float`
+
+Calcola il numero medio di ConfigMap per risorsa:
+
+```text
+num_configmaps / num_resources
+```
+
+**Perché è importante:** Misura indirettamente il grado di esternalizzazione della configurazione. Un valore moderato suggerisce una buona separazione tra configurazione e workload, mentre valori molto elevati possono indicare una frammentazione eccessiva della configurazione applicativa.
+
+---
+
+### 47. `SchedulingComplexity`
+
+**Tipo:** `float`
+
+Misura la densità dei vincoli di scheduling applicati alle risorse:
+
+```text
+(num_affinity_rules + num_node_selectors + num_tolerations) / num_resources
+```
+
+**Perché è importante:** Affinity, node selectors e tolerations introducono logica avanzata di allocazione. Una forte concentrazione di questi meccanismi aumenta il rischio di errori di scheduling, Pod bloccati in stato `Pending` e comportamenti inattesi in produzione.
+
+---
+
+### 48. `ResourceConstraintRatio`
+
+**Tipo:** `float`
+
+Calcola il rapporto tra resource limits definiti e numero totale di risorse:
+
+```text
+num_resource_limits / num_resources
+```
+
+**Perché è importante:** Rappresenta il livello di governance delle risorse del manifest. Valori bassi evidenziano workload privi di limiti CPU/RAM, aumentando il rischio di consumo incontrollato delle risorse e instabilità del cluster.
+
+---
+
+### 49. `StructuralDensity`
+
+**Tipo:** `float`
+
+Calcola il numero medio di campi definiti per risorsa:
+
+```text
+num_total_fields / num_resources
+```
+
+**Perché è importante:** È una misura normalizzata della densità configurativa. Risorse particolarmente dense risultano più difficili da comprendere, revisionare e mantenere, aumentando il rischio di errori umani e misconfigurazioni.
+
+---
+
+### 50. `ManifestComplexityRatio`
+
+**Tipo:** `float`
+
+Normalizza la complessità strutturale del manifest rispetto al numero di tipologie di risorse utilizzate:
+
+```text
+manifest_structural_complexity / num_kinds
+```
+
+**Perché è importante:** Permette di distinguere tra manifest complessi perché contengono molti tipi diversi di risorse e manifest complessi perché ogni singolo tipo è fortemente configurato. Valori elevati indicano una maggiore complessità per categoria di risorsa.
+
+---
+
+### 51. `FieldEntropy`
+
+**Tipo:** `float`
+
+Combina entropia configurativa e profondità strutturale:
+
+```text
+config_entropy * nested_object_ratio
+```
+
+**Perché è importante:** Amplifica i casi in cui configurazioni altamente eterogenee sono anche profondamente annidate. Questa combinazione è spesso associata a manifest difficili da comprendere e statisticamente più soggetti a errori di configurazione.
+
+---
+
+### 52. `NestingPressure`
+
+**Tipo:** `float`
+
+Misura la pressione strutturale derivante dall'interazione tra annidamento e verbosità:
+
+```text
+nested_object_ratio * avg_fields_per_resource
+```
+
+**Perché è importante:** Evidenzia manifest in cui configurazioni già verbose sono ulteriormente aggravate da strutture profondamente annidate. Questa situazione aumenta significativamente il carico cognitivo durante debugging, review e manutenzione.
+
+---
+
+### 53. `ConfigStress`
+
+**Tipo:** `float`
+
+Metrica sintetica che combina densità strutturale, entropia configurativa e anti-pattern:
+
+```text
+structural_density * config_entropy * (1 + misconfig_density)
+```
+
+**Perché è importante:** Fornisce una misura complessiva della pressione configurativa esercitata dal manifest. Valori elevati identificano configurazioni contemporaneamente dense, eterogenee e affette da segnali di misconfigurazione, caratteristiche frequentemente osservate nei manifest associati a difetti e regressioni operative.
+
+## Riepilogo Completo (Metriche Base + Composte)
 
 | Metrica | Tipo | Segnale critico |
 |---|---|---|
@@ -493,3 +633,13 @@ Conta i blocchi `volumes` dichiarati a livello di Pod (configmap, secret, emptyD
 | `NumSpecFields/TotalFields` | int | Indicatori base del volume logico del file (stile LOC) |
 | `NumTolerations` | int | Valore alto → complessità in interazione con i nodi |
 | `NumVolumes` | int | Valore alto → dipendenze fs/hardware, crash di I/O |
+| `MisconfigDensity` | float | Valore alto → forte presenza di anti-pattern noti |
+| `LabelAnnotationRatio` | float | Valori estremi → metadati insufficienti o eccessivi |
+| `ObservabilityScore` | float | Valore alto → configurazione molto esternalizzata |
+| `SchedulingComplexity` | float | Valore alto → rischio di scheduling failure |
+| `ResourceConstraintRatio` | float | Valore basso → workload privi di limiti adeguati |
+| `StructuralDensity` | float | Valore alto → risorse dense e difficili da mantenere |
+| `ManifestComplexityRatio` | float | Valore alto → elevata complessità per tipo di risorsa |
+| `FieldEntropy` | float | Valore alto → complessità strutturale ed entropica elevata |
+| `NestingPressure` | float | Valore alto → forte pressione strutturale |
+| `ConfigStress` | float | Valore alto → manifest ad alto rischio di misconfiguration |
