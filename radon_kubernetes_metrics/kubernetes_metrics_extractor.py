@@ -1,12 +1,12 @@
-from import_metrics import general_metrics, manifest_metrics
+from import_metrics import general_metrics, manifest_metrics, composite_metrics
 from .utils import ParsedManifest
 
 def extract_kubernetes(script: str):
 
     if script is None:
-        raise TypeError('Expected a string')
+        raise TypeError("Expected a string")
 
-    results = dict()
+    results = {}
 
     for name in general_metrics:
         try:
@@ -22,6 +22,12 @@ def extract_kubernetes(script: str):
     for name in manifest_metrics:
         try:
             results[name] = manifest_metrics[name](manifest).count()
+        except Exception:
+            results[name] = 0
+
+    for name in composite_metrics:
+        try:
+            results[name] = composite_metrics[name](manifest).count()
         except Exception:
             results[name] = 0
 
