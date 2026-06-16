@@ -64,9 +64,17 @@ from .manifest.num_deprecated_api_versions import NumDeprecatedAPIVersions
 from .manifest.num_affinity_rules import NumAffinityRules
 from .manifest.num_tolerations import NumTolerations
 from .manifest.num_node_selectors import NumNodeSelectors
-# ---------------- KUBERNETES METRICS ----------------
 
-# ---------------- GENERAL ----------------
+# ---------------- COMPLEX METRICS ----------------
+
+from .complex_metrics.security_risk_score import SecurityRiskScore
+from .complex_metrics.scheduling_complexity import SchedulingComplexity
+from .complex_metrics.resource_governance_ratio import ResourceGovernanceRatio
+from .complex_metrics.deployment_risk_score import DeploymentRiskScore
+from .complex_metrics.structural_density import StructuralDensity
+from .complex_metrics.manifest_verbosity import ManifestVerbosity
+from .complex_metrics.network_exposure_density import NetworkExposureDensity
+from .complex_metrics.misconfiguration_pressure import MisconfigurationPressure
 
 general_metrics = {
     'lines_code': LinesCode,
@@ -143,4 +151,15 @@ manifest_metrics = {
     'manifest_structural_complexity': ManifestStructuralComplexity,
     'config_entropy': ConfigEntropy,
     'nested_object_ratio': NestedObjectRatio,
+}
+
+composite_metrics = {
+    "security_risk_score": SecurityRiskScore,
+    "scheduling_complexity": SchedulingComplexity,
+    "resource_governance_ratio": ResourceGovernanceRatio,
+    "deployment_risk_score": DeploymentRiskScore,
+    "structural_density": StructuralDensity,
+    "manifest_verbosity": ManifestVerbosity,
+    "network_exposure_density": NetworkExposureDensity,
+    "misconfiguration_pressure": MisconfigurationPressure,
 }
