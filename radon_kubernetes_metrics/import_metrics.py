@@ -77,6 +77,7 @@ from .complex_metrics.manifest_complexity_ratio import ManifestComplexityRatio
 from .complex_metrics.field_entropy import FieldEntropy
 from .complex_metrics.nesting_pressure import NestingPressure
 from .complex_metrics.config_stress import ConfigStress
+from .complex_metrics.kubernetes_risk_index import KubernetesRiskIndex
 
 general_metrics = {
     'lines_code': LinesCode,
@@ -166,4 +167,5 @@ composite_metrics = {
     'field_entropy': FieldEntropy,
     'nesting_pressure': NestingPressure,
     'config_stress': ConfigStress,
+    'kubernetes_risk_index': KubernetesRiskIndex
 }
